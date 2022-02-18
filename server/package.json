@@ -1,0 +1,28 @@
+{
+  "name": "crypto-dashboard-backend",
+  "version": "1.0.0",
+  "description": "A cryptocurrency dashboard with user defined wishlists!",
+  "main": "server.js",
+  "scripts": {
+    "dev": "nodemon server.js",
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Daniel Nofulla",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.26.0",
+    "bcryptjs": "^2.4.3",
+    "connect-mongodb-session": "^3.1.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.0",
+    "express": "^4.17.2",
+    "express-session": "^1.17.2",
+    "mongoose": "^6.2.1",
+    "passport": "^0.5.2",
+    "passport-local": "^1.0.0",
+    "twilio": "^3.74.0",
+    "uuid": "^8.3.2"
+  }
+}
