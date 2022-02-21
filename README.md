@@ -11,6 +11,7 @@ This is a Cryptocurrency Dashboard that is used to display Cryptocurrency data, 
 - JavaScript
 - Twilio SMS API for Phone-based Account Verification
 - Twilio SendGrid API for Emailing Crypto Wishlists
+- CoinGecko API provided from RapidAPI
 
 ### Project Status
 

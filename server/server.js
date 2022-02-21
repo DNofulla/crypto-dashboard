@@ -7,7 +7,9 @@ const mongoose = require("mongoose");
 
 /* Routes */
 const usersRoute = require("./routes/User");
-const postsRoute = require("./routes/Post");
+const twilioRoute = require("./routes/Twilio");
+const cryptoRoute = require("./routes/Crypto");
+const wishlistsRoute = require("./routes/Wishlist");
 
 const session = require("express-session");
 const MongoDBStore = require("connect-mongodb-session")(session);
@@ -81,7 +83,9 @@ app.get("/", (req, res) => {
 
 /* Routes */
 app.use("/users", usersRoute);
-app.use("/posts", postsRoute);
+app.use("/twilio", twilioRoute);
+app.use("/crypto", cryptoRoute);
+app.use("/wishlists", wishlistsRoute);
 
 app.listen(port, () => {
   console.log(`Mental Health Tracker Back End Server running at Port ${port}!`);

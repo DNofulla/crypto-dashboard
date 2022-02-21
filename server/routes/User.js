@@ -5,11 +5,6 @@ const User = require("../models/User");
 const passport = require("passport");
 const VerificationCode = require("../models/VerificationCode");
 
-const client = require("twilio")(
-  process.env.TWILIO_ACCOUNT_SID,
-  process.env.TWILIO_AUTH_TOKEN,
-);
-
 router.get("/", async (req, res) => {
   res
     .status(400)
@@ -133,57 +128,6 @@ router.post("/logout", async (req, res) => {
   return res.status(200).json({
     message: `User Session has been destroyed!`,
   });
-});
-
-function makeid(length) {
-  var result = "";
-  var characters = "0123456789";
-  var charactersLength = characters.length;
-  for (var i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
-  }
-  return result;
-}
-
-router.post("/accountVerify/new/", async (req, res) => {
-  // const email = req.body.email;
-  // const username = req.body.username;
-
-  // const verificationCode = await VerificationCode.create({
-  //   username,
-  //   destinationNumber: `+1${email}`,
-  //   verificationCode: makeid(7),
-  //   expires: new Date(new Date() + 15 * 60000),
-  // });
-
-  // await verificationCode.save();
-
-  // client.messages
-  //   .create({
-  //     body: `Here is your account verification passcode: ${verificationCode.verificationCode}. It expires in 15 minutes!`,
-  //     from: process.env.TWILIO_TRIAL_NUMBER,
-  //     to: `+1${email}`,
-  //   })
-  //   .then((message) => {
-  //     console.log(message.sid);
-  //     res.status(200).json({ msg: "Success! Message Sent" });
-  //   })
-  //   .catch((error) => {
-  //     console.log(error.message);
-  //     res.status(400).json({ message: "Message Failed to Send!" });
-  //   });
-  res.status(200).json({ message: "Success! Message Sent!" });
-});
-
-router.post("/verify", async (req, res) => {
-  const verificationCode = req.body.verificationCode;
-  const username = req.body.username;
-
-  await VerificationCode.deleteOne({ verificationCode });
-
-  const user = await User.updateOne({ username }, { verified: true });
-
-  res.status(200).json(user);
 });
 
 module.exports = router;
