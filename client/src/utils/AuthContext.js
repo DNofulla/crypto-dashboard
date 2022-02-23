@@ -11,23 +11,22 @@ export const AuthProvider = ({ children }) => {
   });
   const history = useNavigate();
   const getData = async () => {
-    Axios.get("http://localhost:8080/users/status", {
-      withCredentials: true,
-    })
-      .then((response) => {
-        console.log(response);
-
-        if (response.data.message) {
-          console.log("Not authenticated, redirecting!");
-          history("/");
-          return;
-        }
-        setState({ user: response.data.user, isAuth: true });
-      })
-      .catch((error) => {
-        console.log(error);
-        history("/");
-      });
+    // Axios.get("http://localhost:8080/users/status", {
+    //   withCredentials: true,
+    // })
+    //   .then((response) => {
+    //     console.log(response);
+    //     if (response.data.message) {
+    //       console.log("Not authenticated, redirecting!");
+    //       history("/");
+    //       return;
+    //     }
+    //     setState({ user: response.data.user, isAuth: true });
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //     history("/");
+    //   });
   };
 
   useEffect(() => {

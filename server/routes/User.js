@@ -3,7 +3,6 @@ const router = Router();
 const bcrypt = require("bcryptjs");
 const User = require("../models/User");
 const passport = require("passport");
-const VerificationCode = require("../models/VerificationCode");
 
 router.get("/", async (req, res) => {
   res
@@ -92,8 +91,6 @@ router.post("/register", async (req, res) => {
     const hashedPassword = await bcrypt.hash(reqUser.password, bcryptSalt);
 
     const newUser = new User({
-      firstName: reqUser.firstName,
-      lastName: reqUser.lastName,
       username: reqUser.username.toLowerCase(),
       password: hashedPassword,
       email: reqUser.email,

@@ -58,18 +58,18 @@ const NavBar = () => {
           flexGrow={1}
           mt={{ base: 4, md: 2 }}
         >
-          <a href="/wishlists/global" target="_blank" rel="noreferrer">
+          <a href="/wishlists/global" rel="noreferrer">
             Global Wishlists
           </a>
           {state.isAuth ? (
-            <Link pt={2} pl={2} to="/wishlists/">
+            <a pt={2} pl={2} href="/wishlists/myWishlists" rel="noreferrer">
               My Wishlists
-            </Link>
+            </a>
           ) : null}
 
           <a
             target="_blank"
-            href="https://github.com/DNofulla/mental-health-tracker"
+            href="https://github.com/DNofulla/crypto-dashboard"
             rel="noreferrer"
             style={{ gap: 4, display: "inline-flex", alignItems: "center" }}
             pt={2}
@@ -133,19 +133,30 @@ const NavBar = () => {
                   border: "1px solid #fff",
                 }}
               >
-                <MenuItem
-                  _hover={{ background: "#323232" }}
-                  _focus={{ backgroundColor: "#323232" }}
-                  _active={{ backgroundColor: "#323232" }}
-                  color="white"
-                  as={Link}
-                  to="/posts"
-                >
-                  Posts
-                </MenuItem>
-
+                <a href="/wishlists/global" rel="noreferrer">
+                  <MenuItem
+                    _hover={{ background: "#323232" }}
+                    _focus={{ backgroundColor: "#323232" }}
+                    _active={{ backgroundColor: "#323232" }}
+                    color="white"
+                  >
+                    Global Wishlists
+                  </MenuItem>
+                </a>
+                {state.isAuth ? (
+                  <a href="/wishlists/myWishlists" rel="noreferrer">
+                    <MenuItem
+                      _hover={{ background: "#323232" }}
+                      _focus={{ backgroundColor: "#323232" }}
+                      _active={{ backgroundColor: "#323232" }}
+                      color="white"
+                    >
+                      My Wishlists
+                    </MenuItem>
+                  </a>
+                ) : null}
                 <a
-                  href="https://github.com/DNofulla/mental-health-tracker"
+                  href="https://github.com/DNofulla/crypto-dashboard"
                   target="_blank"
                   rel="noreferrer"
                 >
@@ -160,72 +171,45 @@ const NavBar = () => {
                   </MenuItem>
                 </a>
 
-                <a
-                  href="https://www.cdc.gov/mentalhealth/tools-resources/individuals/index.htm"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <MenuItem
-                    _hover={{ background: "#323232" }}
-                    _focus={{ backgroundColor: "#323232" }}
-                    _active={{ backgroundColor: "#323232" }}
-                    color="white"
-                  >
-                    <ExternalLinkIcon />
-                    Get Help!
-                  </MenuItem>
-                </a>
-
                 {!state.isAuth ? (
                   <>
-                    {" "}
-                    <MenuItem
-                      _hover={{ background: "#323232" }}
-                      _focus={{ backgroundColor: "#323232" }}
-                      _active={{ backgroundColor: "#323232" }}
-                      color="white"
-                      as={Link}
-                      to="/login"
-                    >
-                      Login
-                    </MenuItem>
-                    <MenuItem
-                      _hover={{ background: "#323232" }}
-                      _focus={{ backgroundColor: "#323232" }}
-                      _active={{ backgroundColor: "#323232" }}
-                      color="white"
-                      to="/signup"
-                      as={Link}
-                    >
-                      Sign Up
-                    </MenuItem>
+                    <a href="/login" rel="noreferrer">
+                      <MenuItem
+                        _hover={{ background: "#323232" }}
+                        _focus={{ backgroundColor: "#323232" }}
+                        _active={{ backgroundColor: "#323232" }}
+                        color="white"
+                      >
+                        Login
+                      </MenuItem>
+                    </a>
+                    <a href="/signup" rel="noreferrer">
+                      <MenuItem
+                        _hover={{ background: "#323232" }}
+                        _focus={{ backgroundColor: "#323232" }}
+                        _active={{ backgroundColor: "#323232" }}
+                        color="white"
+                      >
+                        Sign Up
+                      </MenuItem>
+                    </a>
                   </>
                 ) : (
                   <>
-                    <MenuItem
-                      _hover={{ background: "#323232" }}
-                      _focus={{ backgroundColor: "#323232" }}
-                      _active={{ backgroundColor: "#323232" }}
-                      color="white"
-                      as={Link}
-                      to="https://github.com/DNofulla/mental-health-tracker"
-                    >
-                      &#65291; New Post
-                    </MenuItem>
-                    <MenuItem
-                      _hover={{ background: "#323232" }}
-                      _focus={{ backgroundColor: "#323232" }}
-                      _active={{ backgroundColor: "#323232" }}
-                      color="white"
-                      to="/"
-                      as={Link}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        logout(history, setState);
-                      }}
-                    >
-                      Log out
-                    </MenuItem>
+                    <a href="/" rel="noreferrer">
+                      <MenuItem
+                        _hover={{ background: "#323232" }}
+                        _focus={{ backgroundColor: "#323232" }}
+                        _active={{ backgroundColor: "#323232" }}
+                        color="white"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          logout(history, setState);
+                        }}
+                      >
+                        Log out
+                      </MenuItem>
+                    </a>
                   </>
                 )}
               </MenuList>

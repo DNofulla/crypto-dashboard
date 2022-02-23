@@ -21,8 +21,6 @@ passport.deserializeUser(async (username, done) => {
     }
 
     return done(null, {
-      firstName: user.firstName,
-      lastName: user.lastName,
       username: user.username,
       email: user.email,
       verified: user.verified,
@@ -53,8 +51,6 @@ passport.use(
       }
 
       return done(null, {
-        firstName: user.firstName,
-        lastName: user.lastName,
         username: user.username,
         email: user.email,
         verified: user.verified,

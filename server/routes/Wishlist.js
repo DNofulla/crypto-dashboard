@@ -69,15 +69,15 @@ router.post("/delete/:wishlistId", async (req, res) => {
     .json({ message: "Wishlist was successfully deleted!" });
 });
 
-router.post("/add/:username/:id", async (req, res) => {
-  const username = req.params.username;
-  const id = req.params.id;
+router.post("/add/:wishlistId/:coinId", async (req, res) => {
+  const wishlistId = req.params.wishlistId;
+  const coinId = req.params.coinId;
 
-  const response = await Axios.request("/id/" + id);
+  const response = await Axios.request("/crypto/id/" + coinId);
 
   const updatedWishlist = await Wishlist.updateOne(
     {
-      username,
+      wishlistId,
     },
     {
       $push: {
@@ -104,18 +104,18 @@ router.post("/add/:username/:id", async (req, res) => {
   return res.status(200).json({ ...updatedWishlist });
 });
 
-router.post("/remove/:username/:id", async (req, res) => {
-  const username = req.params.username;
-  const id = req.params.id;
+router.post("/remove/:wishlistId/:coinId", async (req, res) => {
+  const wishlistId = req.params.wishlistId;
+  const coinId = req.params.coinId;
 
   const updatedWishlist = await Wishlist.updateOne(
     {
-      username,
+      wishlistId,
     },
     {
       $pull: {
         items: {
-          id,
+          id: coinId,
           //   market_cap_rank: response.data.market_cap_rank,
           //   symbol: response.data.symbol,
           //   name: response.data.name,
@@ -133,6 +133,57 @@ router.post("/remove/:username/:id", async (req, res) => {
       },
     },
   );
+
+  if (!updatedWishlist) {
+    return res.status(400).json({ message: "EMOTIONAL DAMAGE" });
+  }
+
+  return res.status(200).json({ ...updatedWishlist });
+});
+
+router.get("/user/lists/all/:username", async (req, res) => {
+  const username = req.params.username;
+
+  const lists = await Wishlist.find({ username });
+
+  if (!lists) {
+    return res.status(400).json({ message: "EMOTIONAL DAMAGE" });
+  }
+
+  return res.status(200).json({ lists });
+});
+
+router.get("/list/id/:wishlistId", async (req, res) => {
+  const wishlistId = req.params.wishlistId;
+
+  const wishlist = await Wishlist.findOne({ wishlistId });
+
+  if (!wishlist) {
+    return res.status(400).json({ message: "EMOTIONAL DAMAGE" });
+  }
+
+  return res.status(200).json({ wishlist });
+});
+
+router.post("/toggleStatus", async (req, res) => {
+  // if (!req.isAuthenticated()) {
+  //   return res.status(403).json({ message: "User not authenticated" });
+  // }
+
+  const wishlistId = req.body.wishlistId;
+
+  const wishlistToEdit = await Wishlist.findOne({ wishlistId: wishlistId });
+
+  if (!wishlistToEdit) {
+    console.log("EMOTIONAL DAMAGE!");
+    return res
+      .status(400)
+      .json({ message: `Post with ID: ${wishlistId} does not exist!` });
+  }
+
+  const updatedWishlist = await Post.updateOne({ wishlistId }, [
+    { $set: { status: { $not: "$private" } } },
+  ]);
 
   return res.status(200).json({ ...updatedWishlist });
 });
