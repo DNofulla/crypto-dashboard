@@ -30,7 +30,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    getData();
+    // getData();
   }, []);
 
   return (
@@ -45,24 +45,16 @@ export const useAuthState = () => {
 };
 
 export const useAuth = () => {
-  const register = async (
-    firstName,
-    lastName,
-    username,
-    password,
-    phoneNumber,
-    history,
-  ) => {
+  const register = async (username, password, email, phoneNumber, history) => {
     try {
-      if (!firstName || !lastName || !username || !phoneNumber || !password) {
+      if (!username || !phoneNumber || !email || !password) {
         alert("Missing fields!");
       }
 
       const newUser = {
-        firstName,
-        lastName,
         username: username.toLowerCase(),
         password: password,
+        email,
         phoneNumber,
         verified: false,
         joinedAt: new Date(),

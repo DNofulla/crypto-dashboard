@@ -58,10 +58,9 @@ router.post("/register", async (req, res) => {
   try {
     let reqUser = req.body;
     if (
-      !reqUser.firstName ||
-      !reqUser.lastName ||
       !reqUser.username ||
       !reqUser.email ||
+      !reqUser.phoneNumber ||
       !reqUser.password
     ) {
       return res.status(400).json({ message: "Empty Fields!" });
@@ -73,6 +72,10 @@ router.post("/register", async (req, res) => {
 
     const userExistsemail = await User.findOne({
       email: reqUser.email,
+    });
+
+    const userExistsPhoneNumber = await User.findOne({
+      phoneNumber: reqUser.phoneNumber,
     });
 
     if (userExistsUsername) {
@@ -87,6 +90,12 @@ router.post("/register", async (req, res) => {
         .json({ message: "Account with this email already exists." });
     }
 
+    if (userExistsPhoneNumber) {
+      return res
+        .status(400)
+        .json({ message: "Account with this phone number already exists." });
+    }
+
     const bcryptSalt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(reqUser.password, bcryptSalt);
 
@@ -94,6 +103,7 @@ router.post("/register", async (req, res) => {
       username: reqUser.username.toLowerCase(),
       password: hashedPassword,
       email: reqUser.email,
+      phoneNumber: reqUser.phoneNumber,
       verified: false,
       joinedAt: new Date(),
     });

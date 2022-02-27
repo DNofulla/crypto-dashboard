@@ -24,13 +24,13 @@ function makeid(length) {
   return result;
 }
 
-router.post("/accountVerify/new/", async (req, res) => {
-  const email = req.body.email;
+router.post("/accountVerify/new", async (req, res) => {
+  const phoneNumber = req.body.phoneNumber;
   const username = req.body.username;
 
   const verificationCode = await VerificationCode.create({
     username,
-    destinationNumber: `+1${email}`,
+    destinationNumber: `+1${phoneNumber}`,
     verificationCode: makeid(7),
     expires: new Date(new Date() + 15 * 60000),
   });
@@ -41,7 +41,7 @@ router.post("/accountVerify/new/", async (req, res) => {
     .create({
       body: `Here is your account verification passcode: ${verificationCode.verificationCode}. It expires in 15 minutes!`,
       from: process.env.TWILIO_TRIAL_NUMBER,
-      to: `+1${email}`,
+      to: `+1${phoneNumber}`,
     })
     .then((message) => {
       console.log(message.sid);

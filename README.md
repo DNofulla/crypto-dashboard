@@ -15,4 +15,4 @@ This is a Cryptocurrency Dashboard that is used to display Cryptocurrency data, 
 
 ### Project Status
 
-IN PROGRESS
+COMPLETED

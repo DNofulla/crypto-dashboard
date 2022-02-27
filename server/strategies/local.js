@@ -24,6 +24,7 @@ passport.deserializeUser(async (username, done) => {
       username: user.username,
       email: user.email,
       verified: user.verified,
+      phoneNumber: user.phoneNumber,
       joinedAt: user.joinedAt,
     });
   } catch (message) {
@@ -54,6 +55,7 @@ passport.use(
         username: user.username,
         email: user.email,
         verified: user.verified,
+        phoneNumber: user.phoneNumber,
         joinedAt: user.joinedAt,
       });
     } catch (message) {

@@ -17,16 +17,14 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Select,
   Spinner,
   Stat,
   StatArrow,
   StatGroup,
-  StatHelpText,
-  StatLabel,
   StatNumber,
   Text,
   useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
 import Axios from "axios";
 import React, { useState, useEffect } from "react";
@@ -35,6 +33,7 @@ import { useAuthState } from "../../utils/AuthContext";
 
 const Crypto = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const toast = useToast();
 
   const { name } = useParams();
 
@@ -43,6 +42,7 @@ const Crypto = () => {
   const { isAuth, user } = useAuthState();
   const [listName, setListName] = useState();
   const [myLists, setMyLists] = useState([]);
+  const [currentWishlistId, setCurrentWishlistId] = useState("");
 
   const getData = async (coin_name) => {
     setIsLoading(true);
@@ -62,8 +62,29 @@ const Crypto = () => {
     if (isAuth) {
       Axios.get(
         "http://localhost:8080/wishlists/user/lists/all/" + user.username,
-        { withCredentials: true },
       );
+    }
+  };
+
+  const addCoinToList = async (wishlistId, coinIdToAdd) => {
+    if (isAuth) {
+      Axios.post(
+        `http://localhost:8080/wishlists/add/${wishlistId}/${coinIdToAdd}`,
+      )
+        .then((response) => {
+          if (!response.data.error) {
+            toast({
+              title: "Coin added to wishlist",
+              description: `${coinIdToAdd} has been added to the wishlist`,
+              status: "success",
+              duration: 3000,
+              isClosable: true,
+            });
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
   };
 
@@ -308,7 +329,7 @@ const Crypto = () => {
                     </Grid>
                   </Box>
                 </Box>
-                {!isAuth ? (
+                {isAuth ? (
                   <Box
                     width="container.lg"
                     display="flex"
@@ -340,6 +361,10 @@ const Crypto = () => {
                                       key={index}
                                       onClick={() => {
                                         setListName(data.name);
+                                        setCurrentWishlistId(
+                                          data.wishlistId,
+                                          name,
+                                        );
                                       }}
                                     >
                                       {data.name}
@@ -354,7 +379,18 @@ const Crypto = () => {
                           <Button colorScheme="red" mr={3} onClick={onClose}>
                             Close
                           </Button>
-                          <Button colorScheme="blue">Add to list</Button>
+                          <Button
+                            colorScheme="blue"
+                            onClick={(e) => {
+                              e.preventDefault();
+
+                              if (currentWishlistId) {
+                                addCoinToList(currentWishlistId);
+                              }
+                            }}
+                          >
+                            Add to list
+                          </Button>
                         </ModalFooter>
                       </ModalContent>
                     </Modal>

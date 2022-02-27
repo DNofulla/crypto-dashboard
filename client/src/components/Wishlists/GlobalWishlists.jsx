@@ -4,43 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 
 const GlobalWishlists = () => {
-  const [lists, setLists] = useState([
-    {
-      wishlistId: "add6f065-c92e-427a-8fa9-082d13196bd0",
-      username: "dnofulla",
-      name: "Dan's Wishlist",
-      items: [],
-      status: true,
-    },
-    {
-      wishlistId: "add6f065-c92e-427a-8fa9-082d13196bd0",
-      username: "dnofulla",
-      name: "Dan's Wishlist",
-      items: [],
-      status: true,
-    },
-    {
-      wishlistId: "add6f065-c92e-427a-8fa9-082d13196bd0",
-      username: "dnofulla",
-      name: "Dan's Wishlist",
-      items: [],
-      status: true,
-    },
-    {
-      wishlistId: "add6f065-c92e-427a-8fa9-082d13196bd0",
-      username: "dnofulla",
-      name: "Dan's Wishlist",
-      items: [],
-      status: true,
-    },
-    {
-      wishlistId: "add6f065-c92e-427a-8fa9-082d13196bd0",
-      username: "dnofulla",
-      name: "Dan's Wishlist",
-      items: [],
-      status: true,
-    },
-  ]);
+  const [lists, setLists] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const history = useNavigate();
 
@@ -59,7 +23,7 @@ const GlobalWishlists = () => {
   };
 
   useEffect(() => {
-    // getData();
+    getData();
   }, []);
 
   return (
@@ -82,7 +46,7 @@ const GlobalWishlists = () => {
               marginBottom: "0.5rem",
             }}
           >
-            {lists.length > 0
+            {!isLoading && lists.length > 0
               ? lists.map((data, index) => (
                   <Box
                     w="container.lg"
@@ -94,6 +58,7 @@ const GlobalWishlists = () => {
                     justifyContent="space-evenly"
                     _hover={{ cursor: "pointer", backgroundColor: "#212121" }}
                     mt={7}
+                    key={index}
                     onClick={() => {
                       history("/wishlists/" + data.wishlistId);
                     }}

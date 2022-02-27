@@ -18,11 +18,12 @@ const PhoneVerification = () => {
   const toast = useToast();
 
   const generateCode = async () => {
-    Axios.post("http://localhost:8080/users/accountVerify/new", {
+    Axios.post("http://localhost:8080/twilio/accountVerify/new", {
       phoneNumber: state.user.phoneNumber,
       username: state.user.username,
     })
       .then((response) => {
+        console.log(state);
         console.log(response);
       })
       .catch((error) => {
@@ -37,7 +38,7 @@ const PhoneVerification = () => {
   const onSubmit = async (e) => {
     e.preventDefault();
 
-    Axios.post("http://localhost:8080/users/verify", {
+    Axios.post("http://localhost:8080/twilio/verify", {
       verificationCode,
       username: state.user.username,
     })

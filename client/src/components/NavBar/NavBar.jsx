@@ -1,28 +1,69 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
   Container,
   Flex,
+  FormControl,
+  FormHelperText,
+  FormLabel,
   Heading,
   IconButton,
+  Input,
   Menu,
   MenuButton,
   MenuItem,
   MenuList,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
   Stack,
+  useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
 
-import { ExternalLinkIcon, HamburgerIcon } from "@chakra-ui/icons";
+import { HamburgerIcon } from "@chakra-ui/icons";
 import { IoLogoGithub } from "react-icons/io5";
 import { useAuthState, useAuth } from "../../utils/AuthContext";
 import { useNavigate } from "react-router";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
+import Axios from "axios";
 
 const NavBar = () => {
   const { state, setState } = useAuthState();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const toast = useToast();
+
+  const [newListName, setNewListName] = useState("");
+
   const { logout } = useAuth();
   const history = useNavigate();
+
+  const createNewWishlist = async () => {
+    Axios.post("http://localhost:8080/wishlists/new", {
+      username: state.user.username,
+      name: newListName,
+    })
+      .then((response) => {
+        if (!response.data.error) {
+          toast({
+            title: "Success",
+            description: "New wishlist has been created!",
+            status: "success",
+            duration: 3000,
+            isClosable: true,
+          });
+          history("/");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   return (
     <Box
@@ -43,11 +84,11 @@ const NavBar = () => {
         justify="space-between"
       >
         <Flex align="center" mr={3}>
-          <Link to="/">
+          <a onClick={() => history("/")}>
             <Heading as="h1" size="lg" letterSpacing={"tighter"}>
               Crypto Dashboard
             </Heading>
-          </Link>
+          </a>
         </Flex>
 
         <Stack
@@ -56,15 +97,58 @@ const NavBar = () => {
           width={{ base: "full", md: "auto" }}
           alignItems="center"
           flexGrow={1}
-          mt={{ base: 4, md: 2 }}
+          mt={{ base: 4, md: 0 }}
         >
-          <a href="/wishlists/global" rel="noreferrer">
-            Global Wishlists
-          </a>
+          <a onClick={() => history("/wishlists/global")}>Global Wishlists</a>
           {state.isAuth ? (
-            <a pt={2} pl={2} href="/wishlists/myWishlists" rel="noreferrer">
-              My Wishlists
-            </a>
+            <>
+              <a
+                pt={2}
+                pl={2}
+                onClick={() => history("/wishlists/myWishlists")}
+              >
+                My Wishlists
+              </a>
+              <Button colorScheme={"green"} onClick={onOpen}>
+                &#65291; New Wishlist
+              </Button>
+              <Modal isOpen={isOpen} onClose={onClose}>
+                <ModalOverlay />
+                <ModalContent>
+                  <ModalHeader>Create new wishlist</ModalHeader>
+                  <ModalCloseButton />
+                  <ModalBody>
+                    <FormControl>
+                      <FormLabel htmlFor="wishlistName">
+                        Wishlist name
+                      </FormLabel>
+                      <Input
+                        id="wishlistName"
+                        type="text"
+                        placeholder="Enter wishlist name"
+                        value={newListName}
+                        defaultValue={newListName}
+                        onChange={(e) => {
+                          setNewListName(e.target.value);
+                        }}
+                      />
+                      <FormHelperText>
+                        The wishlist name doesn't have to be unique.
+                      </FormHelperText>
+                    </FormControl>
+                  </ModalBody>
+
+                  <ModalFooter>
+                    <Button colorScheme="red" mr={3} onClick={onClose}>
+                      Close
+                    </Button>
+                    <Button colorScheme="blue" onClick={createNewWishlist}>
+                      Create wishlist
+                    </Button>
+                  </ModalFooter>
+                </ModalContent>
+              </Modal>
+            </>
           ) : null}
 
           <a
@@ -91,16 +175,21 @@ const NavBar = () => {
           >
             {!state.isAuth ? (
               <>
-                <Link pt={2} pl={2} to="/login">
+                <a pt={2} pl={2} onClick={() => history("/login")}>
                   <Button colorScheme="blue">Login</Button>
-                </Link>
-                <Link style={{ gap: 4 }} to="/signup" pt={2} pl={2}>
+                </a>
+                <a
+                  style={{ gap: 4 }}
+                  onClick={() => history("/signup")}
+                  pt={2}
+                  pl={2}
+                >
                   <Button colorScheme="purple">Sign Up</Button>
-                </Link>{" "}
+                </a>{" "}
               </>
             ) : (
               <>
-                <Link to="/">
+                <a onClick={() => history("/")}>
                   <Button
                     colorScheme="red"
                     onClick={(e) => {
@@ -111,7 +200,7 @@ const NavBar = () => {
                   >
                     Log out
                   </Button>
-                </Link>
+                </a>
               </>
             )}
           </Stack>
@@ -133,7 +222,7 @@ const NavBar = () => {
                   border: "1px solid #fff",
                 }}
               >
-                <a href="/wishlists/global" rel="noreferrer">
+                <a onClick={() => history("/wishlists/global")}>
                   <MenuItem
                     _hover={{ background: "#323232" }}
                     _focus={{ backgroundColor: "#323232" }}
@@ -144,16 +233,67 @@ const NavBar = () => {
                   </MenuItem>
                 </a>
                 {state.isAuth ? (
-                  <a href="/wishlists/myWishlists" rel="noreferrer">
-                    <MenuItem
-                      _hover={{ background: "#323232" }}
-                      _focus={{ backgroundColor: "#323232" }}
-                      _active={{ backgroundColor: "#323232" }}
-                      color="white"
-                    >
-                      My Wishlists
-                    </MenuItem>
-                  </a>
+                  <>
+                    <div onClick={onOpen}>
+                      <MenuItem
+                        _hover={{ background: "#323232" }}
+                        _focus={{ backgroundColor: "#323232" }}
+                        _active={{ backgroundColor: "#323232" }}
+                        color="white"
+                      >
+                        &#65291; New Wishlist
+                      </MenuItem>
+                    </div>
+                    <Modal isOpen={isOpen} onClose={onClose}>
+                      <ModalOverlay />
+                      <ModalContent>
+                        <ModalHeader>Create new wishlist</ModalHeader>
+                        <ModalCloseButton />
+                        <ModalBody>
+                          <FormControl>
+                            <FormLabel htmlFor="wishlistName">
+                              Wishlist name
+                            </FormLabel>
+                            <Input
+                              id="wishlistName"
+                              type="text"
+                              placeholder="Enter wishlist name"
+                              value={newListName}
+                              defaultValue={newListName}
+                              onChange={(e) => {
+                                setNewListName(e.target.value);
+                              }}
+                            />
+                            <FormHelperText>
+                              The wishlist name doesn't have to be unique.
+                            </FormHelperText>
+                          </FormControl>
+                        </ModalBody>
+
+                        <ModalFooter>
+                          <Button colorScheme="red" mr={3} onClick={onClose}>
+                            Close
+                          </Button>
+                          <Button
+                            colorScheme="blue"
+                            onClick={createNewWishlist}
+                          >
+                            Create wishlist
+                          </Button>
+                        </ModalFooter>
+                      </ModalContent>
+                    </Modal>
+                    <a onClick={() => history("/wishlists/myWishlists")}>
+                      <MenuItem
+                        _hover={{ background: "#323232" }}
+                        _focus={{ backgroundColor: "#323232" }}
+                        _active={{ backgroundColor: "#323232" }}
+                        color="white"
+                      >
+                        My Wishlists
+                      </MenuItem>
+                    </a>
+                  </>
                 ) : null}
                 <a
                   href="https://github.com/DNofulla/crypto-dashboard"
@@ -173,7 +313,7 @@ const NavBar = () => {
 
                 {!state.isAuth ? (
                   <>
-                    <a href="/login" rel="noreferrer">
+                    <a rel="noreferrer" onClick={() => history("/login")}>
                       <MenuItem
                         _hover={{ background: "#323232" }}
                         _focus={{ backgroundColor: "#323232" }}
@@ -183,7 +323,7 @@ const NavBar = () => {
                         Login
                       </MenuItem>
                     </a>
-                    <a href="/signup" rel="noreferrer">
+                    <a rel="noreferrer" onClick={() => history("/signup")}>
                       <MenuItem
                         _hover={{ background: "#323232" }}
                         _focus={{ backgroundColor: "#323232" }}
@@ -196,7 +336,7 @@ const NavBar = () => {
                   </>
                 ) : (
                   <>
-                    <a href="/" rel="noreferrer">
+                    <a onClick={() => history("/")}>
                       <MenuItem
                         _hover={{ background: "#323232" }}
                         _focus={{ backgroundColor: "#323232" }}

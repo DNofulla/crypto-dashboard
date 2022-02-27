@@ -2,7 +2,18 @@ import {
   Box,
   Button,
   Container,
+  FormControl,
+  FormHelperText,
+  FormLabel,
   Image,
+  Input,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
   Table,
   Tbody,
   Td,
@@ -10,6 +21,7 @@ import {
   Th,
   Thead,
   Tr,
+  useDisclosure,
 } from "@chakra-ui/react";
 import Axios from "axios";
 import React, { useEffect, useState } from "react";
@@ -18,141 +30,14 @@ import { useAuthState } from "../../utils/AuthContext";
 
 const Wishlist = () => {
   const [wishlist, setWishlist] = useState([]);
-  const [coins, setCoins] = useState([
-    {
-      id: "bitcoin",
-      market_cap_rank: "1",
-      image:
-        "https://assets.coingecko.com/coins/images/1/thumb/bitcoin.png?1547033579",
-      name: "Bitcoin",
-      market_cap: "716551817428",
-      current_price: "37745",
-    },
-    {
-      id: "bitcoin",
-
-      market_cap_rank: "1",
-      image:
-        "https://assets.coingecko.com/coins/images/1/thumb/bitcoin.png?1547033579",
-      name: "Bitcoin",
-      market_cap: "716551817428",
-      current_price: "37745",
-    },
-    {
-      id: "bitcoin",
-
-      market_cap_rank: "1",
-      image:
-        "https://assets.coingecko.com/coins/images/1/thumb/bitcoin.png?1547033579",
-      name: "Bitcoin",
-      market_cap: "716551817428",
-      current_price: "37745",
-    },
-    {
-      id: "bitcoin",
-
-      market_cap_rank: "1",
-      image:
-        "https://assets.coingecko.com/coins/images/1/thumb/bitcoin.png?1547033579",
-      name: "Bitcoin",
-      market_cap: "716551817428",
-      current_price: "37745",
-    },
-    {
-      id: "bitcoin",
-
-      market_cap_rank: "1",
-      image:
-        "https://assets.coingecko.com/coins/images/1/thumb/bitcoin.png?1547033579",
-      name: "Bitcoin",
-      market_cap: "716551817428",
-      current_price: "37745",
-    },
-    {
-      id: "bitcoin",
-
-      market_cap_rank: "1",
-      image:
-        "https://assets.coingecko.com/coins/images/1/thumb/bitcoin.png?1547033579",
-      name: "Bitcoin",
-      market_cap: "716551817428",
-      current_price: "37745",
-    },
-    {
-      id: "bitcoin",
-
-      market_cap_rank: "1",
-      image:
-        "https://assets.coingecko.com/coins/images/1/thumb/bitcoin.png?1547033579",
-      name: "Bitcoin",
-      market_cap: "716551817428",
-      current_price: "37745",
-    },
-    {
-      id: "bitcoin",
-
-      market_cap_rank: "1",
-      image:
-        "https://assets.coingecko.com/coins/images/1/thumb/bitcoin.png?1547033579",
-      name: "Bitcoin",
-      market_cap: "716551817428",
-      current_price: "37745",
-    },
-    {
-      id: "bitcoin",
-
-      market_cap_rank: "1",
-      image:
-        "https://assets.coingecko.com/coins/images/1/thumb/bitcoin.png?1547033579",
-      name: "Bitcoin",
-      market_cap: "716551817428",
-      current_price: "37745",
-    },
-    {
-      id: "bitcoin",
-
-      market_cap_rank: "1",
-      image:
-        "https://assets.coingecko.com/coins/images/1/thumb/bitcoin.png?1547033579",
-      name: "Bitcoin",
-      market_cap: "716551817428",
-      current_price: "37745",
-    },
-    {
-      id: "bitcoin",
-
-      market_cap_rank: "1",
-      image:
-        "https://assets.coingecko.com/coins/images/1/thumb/bitcoin.png?1547033579",
-      name: "Bitcoin",
-      market_cap: "716551817428",
-      current_price: "37745",
-    },
-    {
-      id: "bitcoin",
-
-      market_cap_rank: "1",
-      image:
-        "https://assets.coingecko.com/coins/images/1/thumb/bitcoin.png?1547033579",
-      name: "Bitcoin",
-      market_cap: "716551817428",
-      current_price: "37745",
-    },
-    {
-      id: "bitcoin",
-
-      market_cap_rank: "1",
-      image:
-        "https://assets.coingecko.com/coins/images/1/thumb/bitcoin.png?1547033579",
-      name: "Bitcoin",
-      market_cap: "716551817428",
-      current_price: "37745",
-    },
-  ]);
+  // const [status, setStatus] = useState(false);
+  const [coins, setCoins] = useState([]);
 
   const { wishlistId } = useParams();
-  const { isAuth, user } = useAuthState();
+  const { state, setState } = useAuthState();
   const history = useNavigate();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [email, setEmail] = useState("");
 
   const getData = async () => {
     Axios.get("http://localhost:8080/wishlists/list/id/" + wishlistId)
@@ -171,11 +56,34 @@ const Wishlist = () => {
       wishlistId: wishlist.wishlistId,
     })
       .then((response) => {
+        if (!response.data.error) {
+          setWishlist(response.data);
+        }
+
         console.log(response);
       })
       .catch((error) => {
         console.error(error.message);
       });
+  };
+
+  const deleteWishlist = async () => {
+    Axios.post("http://localhost:8080/wishlists/remove/" + wishlistId)
+      .then((response) => {
+        console.log(response);
+        history("/wishlists/myWishlists");
+      })
+      .catch((error) => {
+        history("/");
+      });
+  };
+
+  const sendEmail = async () => {
+    Axios.post("http://localhost:8080/twilio/wishlist/email/" + wishlistId, {
+      email,
+    }).then((response) => {
+      console.log(response);
+    });
   };
 
   const removeItem = async (coinId) => {
@@ -258,8 +166,7 @@ const Wishlist = () => {
               </Tbody>
             </Table>
           </Box>
-          {(wishlist.username && !user.username === wishlist.username) ||
-          true ? (
+          {wishlist.username && state.user.username === wishlist.username ? (
             <Box
               w="container.xl"
               display="flex"
@@ -267,10 +174,50 @@ const Wishlist = () => {
               alignItems="center"
               mt={2}
             >
-              <Button colorScheme="red">Delete Wishlist</Button>
+              <Button
+                colorScheme="red"
+                onClick={() => deleteWishlist(wishlist.id)}
+              >
+                Delete Wishlist
+              </Button>
               <Button colorScheme="blue" onClick={toggleStatus}>
                 Make {wishlist.status ? "Private" : "Public"}
               </Button>
+              <Button colorScheme="purple" onClick={onOpen}>
+                Share it!
+              </Button>
+
+              <Modal isOpen={isOpen} onClose={onClose}>
+                <ModalOverlay />
+                <ModalContent>
+                  <ModalHeader>Modal Title</ModalHeader>
+                  <ModalCloseButton />
+                  <ModalBody>
+                    <FormControl>
+                      <FormLabel htmlFor="email">Email address</FormLabel>
+                      <Input
+                        id="email"
+                        type="email"
+                        value={email}
+                        defaultValue={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                      />
+                      <FormHelperText>
+                        We'll never share your email.
+                      </FormHelperText>
+                    </FormControl>
+                  </ModalBody>
+
+                  <ModalFooter>
+                    <Button colorScheme="red" mr={3} onClick={onClose}>
+                      Close
+                    </Button>
+                    <Button colorScheme="blue" onClick={sendEmail}>
+                      Send Email
+                    </Button>
+                  </ModalFooter>
+                </ModalContent>
+              </Modal>
             </Box>
           ) : null}
         </Container>

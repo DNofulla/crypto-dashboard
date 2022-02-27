@@ -10,9 +10,8 @@ import { useAuth } from "../../utils/AuthContext";
 import { useNavigate } from "react-router";
 
 const Signup = () => {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
   const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
   const { register } = useAuth();
@@ -21,18 +20,10 @@ const Signup = () => {
   const onSubmit = async (e) => {
     e.preventDefault();
 
-    await register(
-      firstName,
-      lastName,
-      username,
-      password,
-      phoneNumber,
-      history,
-    );
+    await register(username, password, email, phoneNumber, history);
 
-    setFirstName("");
-    setLastName("");
     setUsername("");
+    setEmail("");
     setPhoneNumber("");
     setPassword("");
   };
@@ -55,45 +46,7 @@ const Signup = () => {
             onSubmit={(e) => onSubmit(e)}
           >
             <FormControl isRequired>
-              <FormLabel color="white" htmlFor="firstName">
-                First Name
-              </FormLabel>
-              <Input
-                color="white"
-                placeholder="First Name"
-                id="firstName"
-                type="text"
-                backgroundColor="#323232"
-                letterSpacing={2}
-                border="none"
-                value={firstName}
-                onChange={(e) => {
-                  e.preventDefault();
-                  setFirstName(e.target.value);
-                }}
-              />
-            </FormControl>
-            <FormControl mt={3} isRequired>
-              <FormLabel color="white" htmlFor="lastName">
-                Last Name
-              </FormLabel>
-              <Input
-                color="white"
-                placeholder="Last Name"
-                id="lastName"
-                type="text"
-                backgroundColor="#323232"
-                letterSpacing={2}
-                border="none"
-                value={lastName}
-                onChange={(e) => {
-                  e.preventDefault();
-                  setLastName(e.target.value);
-                }}
-              />
-            </FormControl>
-            <FormControl mt={3} isRequired>
-              <FormLabel color="white" htmlFor="phoneNumber">
+              <FormLabel color="white" htmlFor="username">
                 Username
               </FormLabel>
               <Input
@@ -108,6 +61,25 @@ const Signup = () => {
                 onChange={(e) => {
                   e.preventDefault();
                   setUsername(e.target.value);
+                }}
+              />
+            </FormControl>
+            <FormControl mt={3} isRequired>
+              <FormLabel color="white" htmlFor="email">
+                Email
+              </FormLabel>
+              <Input
+                color="white"
+                placeholder="Email Address"
+                id="email"
+                type="email"
+                backgroundColor="#323232"
+                letterSpacing={2}
+                border="none"
+                value={email}
+                onChange={(e) => {
+                  e.preventDefault();
+                  setEmail(e.target.value);
                 }}
               />
             </FormControl>

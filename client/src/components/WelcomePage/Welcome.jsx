@@ -4,21 +4,21 @@ import {
   Image,
   Spinner,
   Table,
-  TableCaption,
   Tbody,
   Td,
   Text,
-  Tfoot,
   Th,
   Thead,
   Tr,
 } from "@chakra-ui/react";
 import Axios from "axios";
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 
 const Welcome = () => {
   const [coins, setCoins] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const history = useNavigate();
 
   const getData = async () => {
     setIsLoading(true);
@@ -32,6 +32,10 @@ const Welcome = () => {
           console.log(err);
         });
     }, 2000);
+  };
+
+  const goToCoinPage = async (coinId) => {
+    history("/crypto/" + coinId);
   };
 
   useEffect(() => {
@@ -77,7 +81,7 @@ const Welcome = () => {
                 <Tbody>
                   {coins.length !== 0
                     ? coins.map((data, index) => (
-                        <Tr key={index}>
+                        <Tr key={index} onClick={() => goToCoinPage(data.id)}>
                           <Td>{data.market_cap_rank}</Td>
                           <Td>
                             {

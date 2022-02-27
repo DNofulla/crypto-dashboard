@@ -34,7 +34,7 @@ router.get("/all/user/:username", async (req, res) => {
 
 router.get("/public/global", async (req, res) => {
   const globalWishlists = await Wishlist.find({
-    private: true,
+    status: true,
   });
   return res.status(200).json({ globalWishlists });
 });
@@ -150,7 +150,7 @@ router.get("/user/lists/all/:username", async (req, res) => {
     return res.status(400).json({ message: "EMOTIONAL DAMAGE" });
   }
 
-  return res.status(200).json({ lists });
+  return res.status(200).json({ lists: [...lists] });
 });
 
 router.get("/list/id/:wishlistId", async (req, res) => {
@@ -186,6 +186,14 @@ router.post("/toggleStatus", async (req, res) => {
   ]);
 
   return res.status(200).json({ ...updatedWishlist });
+});
+
+router.post("/remove/:wishlistId", async (req, res) => {
+  const wishlistId = req.params.wishlistId;
+
+  await Wishlist.deleteOne({ wishlistId });
+
+  return res.status(200).json({ success: true, message: "Wishlist Deleted!" });
 });
 
 module.exports = router;
